@@ -16,25 +16,22 @@ from homeassistant.components.sensor import PLATFORM_SCHEMA
 _LOGGER = logging.getLogger(__name__)
 
 
-CONF_FOLDER_PATHS = 'folder_paths'
+CONF_FOLDER_PATHS = 'folder'
 CONF_FILTER = 'filter'
 DEFAULT_FILTER = '*'
 
-SCAN_INTERVAL = timedelta(seconds=1)
+SCAN_INTERVAL = timedelta(seconds=10)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_FOLDER_PATHS): [cv.isdir],
+    vol.Required(CONF_FOLDER_PATHS): cv.isdir,
     vol.Optional(CONF_FILTER, default=DEFAULT_FILTER): cv.string,
 })
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up the folder sensor."""
-    sensors = []
-    for folder_path in config.get(CONF_FOLDER_PATHS):
-        sensors.append(Folder(folder_path, config.get(CONF_FILTER)))
-
-    add_devices(sensors, True)
+    folder = Folder(config.get(CONF_FOLDER_PATHS), config.get(CONF_FILTER))
+    add_devices([folder], True)
 
 
 class Folder(Entity):

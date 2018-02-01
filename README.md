@@ -5,12 +5,19 @@ The use case is detecting when a file in a folder is created or updated. For exa
 HA instance that saves a timestamped photo when [motion](https://github.com/HerrHofrat/hassio-addons/tree/master/motion) is detected. This sensor allows me to detect when another image is saved, and
 exposes the name of that new image file. The number of files in the folder and the names of those files are exposed as attributes.
 
-To use this custom component, add the custom_components folder to your root config folder [following the docs](https://home-assistant.io/developers/platform_example_sensor/). Then add to your config: 
+To use this custom component, add the custom_components folder to your root config folder [following the docs](https://home-assistant.io/developers/platform_example_sensor/). Then add to your config:
 
 ```yaml
 sensor:
   - platform: folder
-    folder_paths:
-      - /Users/robincole/Pictures/
-      - /Users/robincole/Google Drive
+    folder: /Users/robincole/Pictures/
+    filter: '*.jpg'
+  - platform: folder
+    folder: /Users/robincole/Google Drive
+    filter: '*.txt'
 ```
+
+Configuration variables:
+
+- **folder** (*Required*): The folder path
+- **filter** (*Optional*): Optional filter

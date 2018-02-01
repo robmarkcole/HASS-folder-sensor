@@ -2,6 +2,7 @@
 Sensor for monitoring a folder.
 """
 from datetime import datetime as dt
+from datetime import timedelta
 import glob
 import logging
 import os
@@ -18,6 +19,8 @@ _LOGGER = logging.getLogger(__name__)
 CONF_FOLDER_PATHS = 'folder_paths'
 CONF_FILTER = 'filter'
 DEFAULT_FILTER = '*'
+
+SCAN_INTERVAL = timedelta(seconds=1)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_FOLDER_PATHS): [cv.isdir],
@@ -56,7 +59,7 @@ class Folder(Entity):
         self._sorted_files_list = self.get_sorted_files_list(
             self._folder_path, self._filter_term)
 
-        self._recent_modified_file = self._sorted_files_list[0]
+        self._recent_modified_file = self._sorted_files_list[-1]
 
         self._last_updated = self.get_last_updated(
             self._recent_modified_file)

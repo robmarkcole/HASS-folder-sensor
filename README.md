@@ -21,3 +21,12 @@ Configuration variables:
 
 - **folder** (*Required*): The folder path
 - **filter** (*Optional*): Optional filter
+
+## Hassio
+In my testing of this custom component with Hassio, I ran into an issue related to permissions. It appears you need to add folders (other than **config**) to the whitelist_external_dirs. As per [this thread](https://community.home-assistant.io/t/hassio-share-directory-access/41617/11), a reboot of the hardware (not just restart of HA) is required for the following to take effect:
+```
+homeassistant:
+  whitelist_external_dirs:
+    - '/share'
+```
+After reboot, the component should just work without permissions errors. 

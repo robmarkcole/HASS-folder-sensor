@@ -10,11 +10,10 @@ To use this custom component, add the custom_components folder to your root conf
 ```yaml
 sensor:
   - platform: folder
-    folder: /Users/robincole/Pictures/
-    filter: '*.jpg'
+    folder: /share/motion
+    filter: '*capture.jpg'
   - platform: folder
-    folder: /Users/robincole/Google Drive
-    filter: '*.txt'
+    folder: /config
 ```
 
 Configuration variables:
@@ -22,11 +21,24 @@ Configuration variables:
 - **folder** (*Required*): The folder path
 - **filter** (*Optional*): Optional filter
 
-## Hassio
-In my testing of this custom component with Hassio, I ran into an issue related to permissions. It appears you need to add folders (other than **config**) to the whitelist_external_dirs. As per [this thread](https://community.home-assistant.io/t/hassio-share-directory-access/41617/11), a reboot of the hardware (not just restart of HA) is required for the following to take effect:
+#### Command line equivalent
+
+Note that the basic functionality is identical to a command line sensor with the following config:
+```yaml
+sensor:
+  - platform: command_line
+    name: new_image
+    command: "ls /share/motion -Art | tail -n -3 | grep 'capture.jpg'"
 ```
+
+
+#### Hassio
+In my testing of this custom component with Hassio, I ran into an issue related to permissions. It appears you may need to add folders (other than **config**) to the whitelist_external_dirs. As per [this thread](https://community.home-assistant.io/t/hassio-share-directory-access/41617/11), a reboot of the hardware (not just restart of HA) is required for the following to take effect:
+```yaml
 homeassistant:
   whitelist_external_dirs:
-    - '/share'
+    - /share
 ```
-After reboot, the component should just work without permissions errors. 
+After reboot, the component should just work without permissions errors.
+
+**UPDATE**: this wasn't required on my last Hassio install at HA 0.62.1.

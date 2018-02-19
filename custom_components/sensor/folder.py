@@ -32,12 +32,27 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 })
 
 
+def get_sorted_files_list(folder_path, filter_term):
+    """Return the sorted list of files, applying filter."""
+    query = folder_path + filter_term
+    files_list = glob.glob(query)
+    sorted_files_list = sorted(files_list, key=os.path.getmtime)
+    return sorted_files_list
+
+
+def get_last_updated(recent_modified_file):
+    """Return the time a file was last modified."""
+    modified_time = os.path.getmtime(recent_modified_file)
+    modified_time_datetime = dt.fromtimestamp(modified_time)
+    return modified_time_datetime.strftime(DATE_STR_FORMAT)
+
+
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up the folder sensor."""
     path = config.get(CONF_FOLDER_PATHS)
 
     if not hass.config.is_allowed_path(path):
-        _LOGGER.error("folder {} is not valid or allowed".format(path))
+        _LOGGER.error("folder %s is not valid or allowed", path)
         return
 
     folder = Folder(path, config.get(CONF_FILTER))
@@ -62,26 +77,13 @@ class Folder(Entity):
 
     def update(self):
         """Update the sensor."""
-        self._sorted_files_list = self.get_sorted_files_list(
+        self._sorted_files_list = get_sorted_files_list(
             self._folder_path, self._filter_term)
 
         self._recent_modified_file = self._sorted_files_list[-1]
 
-        self._last_updated = self.get_last_updated(
+        self._last_updated = get_last_updated(
             self._recent_modified_file)
-
-    def get_sorted_files_list(self, folder_path, filter_term):
-        """Return the sorted list of files, applying filter."""
-        query = folder_path + filter_term
-        files_list = glob.glob(query)
-        sorted_files_list = sorted(files_list, key=os.path.getmtime)
-        return sorted_files_list
-
-    def get_last_updated(self, recent_modified_file):
-        """Return the time a file was last modified."""
-        modified_time = os.path.getmtime(recent_modified_file)
-        modified_time_datetime = dt.fromtimestamp(modified_time)
-        return modified_time_datetime.strftime(DATE_STR_FORMAT)
 
     @property
     def name(self):

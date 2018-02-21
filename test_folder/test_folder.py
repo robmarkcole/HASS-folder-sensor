@@ -62,4 +62,3 @@ class TestFolderSensor(unittest.TestCase):
         state = self.hass.states.get('sensor.test_folder')
         #assert state.state == '0.0'
         assert state.attributes.get('number_of_files') == 1
-        assert state.attributes.get('files') == [TEST_TXT]

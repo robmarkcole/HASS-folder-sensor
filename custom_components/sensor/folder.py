@@ -103,10 +103,9 @@ class Folder(Entity):
     def device_state_attributes(self):
         """Return other details about the sensor state."""
         attr = {
-            'folder': self._folder_path,
+            'path': self._folder_path,
             'filter': self._filter_term,
             'modified_file': os.path.split(self._recent_modified_file)[1],
-            'number_of_files': len(self._sorted_files_list),
-            'files': [os.path.split(f)[1] for f in self._sorted_files_list]
+            'number_of_files': len(self._sorted_files_list)
             }
         return attr

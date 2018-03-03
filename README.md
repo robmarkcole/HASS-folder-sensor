@@ -29,3 +29,5 @@ sensor:
     name: new_image
     command: "ls /share/motion -Art | tail -n -3 | grep 'capture.jpg'"
 ```
+
+Adding file watching will require watchdog as per https://github.com/home-assistant/home-assistant/pull/12866#pullrequestreview-100987902
